@@ -8,14 +8,18 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/catalog.test.ts"
+    "test": "node --experimental-strip-types --import ./tests/register.mjs --test tests/catalog.test.ts tests/admin.test.ts",
+    "admin:hash": "node scripts/hash-admin-password.mjs"
   },
   "dependencies": {
+    "@vercel/blob": "^2.8.2",
     "next": "^16.4.2",
+    "postgres": "^3.4.9",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.11",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

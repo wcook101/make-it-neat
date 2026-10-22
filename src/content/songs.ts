@@ -24,6 +24,9 @@ export type Song = {
   artworkNote?: string;
   streaming?: StreamingLink[];
   satireDisclaimer?: string;
+  lyrics?: string;
+  duration?: string;
+  releaseDate?: string;
 };
 
 /**
@@ -66,12 +69,22 @@ function placeholderSlot(number: number): Song {
   };
 }
 
-const fillerCount = Math.max(0, CATALOG_SIZE - releases.length);
+export function withPlaceholders(released: Song[]): Song[] {
+  const fillers: Song[] = [];
+  const used = new Set(released.map((song) => song.slug));
+  let number = released.length + 1;
+  while (released.length + fillers.length < CATALOG_SIZE && number < 100) {
+    const slug = `placeholder-${String(number).padStart(2, "0")}`;
+    const slotNumber = number;
+    number += 1;
+    if (used.has(slug)) continue;
+    fillers.push(placeholderSlot(slotNumber));
+    used.add(slug);
+  }
+  return [...released, ...fillers];
+}
 
-export const songs: Song[] = [
-  ...releases,
-  ...Array.from({ length: fillerCount }, (_, index) => placeholderSlot(index + releases.length + 1)),
-];
+export const songs: Song[] = withPlaceholders(releases);
 
 export function featuredSong(): Song {
   return songs.find((song) => song.featured) ?? songs[0];

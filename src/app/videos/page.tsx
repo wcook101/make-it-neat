@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { YoutubeEmbed } from "@/components/youtube-embed";
-import { videoSongs } from "@/content/songs";
+import { getCatalog } from "@/server/catalog/load";
 
 export const metadata: Metadata = {
   title: "Videos",
   description: "YouTube music videos from Make It Neat.",
 };
 
-export default function VideosPage() {
-  const videos = videoSongs();
+export const dynamic = "force-dynamic";
+
+export default async function VideosPage() {
+  const videos = (await getCatalog()).filter((song) => Boolean(song.youtubeId));
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">

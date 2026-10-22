@@ -4,12 +4,16 @@ import { AudioPlayer } from "@/components/audio-player";
 import { SongArt } from "@/components/song-art";
 import { SongCard } from "@/components/song-card";
 import { site } from "@/content/site";
-import { CATALOG_SIZE, featuredSong, releasedSongs, songs } from "@/content/songs";
+import { CATALOG_SIZE } from "@/content/songs";
+import { getCatalog } from "@/server/catalog/load";
 
-export default function HomePage() {
-  const featured = featuredSong();
-  const latest = releasedSongs().filter((song) => song.slug !== featured.slug);
-  const openSlots = songs.filter((song) => song.placeholder).length;
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const catalog = await getCatalog();
+  const featured = catalog.find((song) => song.featured && !song.placeholder) ?? catalog[0];
+  const latest = catalog.filter((song) => !song.placeholder && song.slug !== featured.slug);
+  const openSlots = catalog.filter((song) => song.placeholder).length;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">

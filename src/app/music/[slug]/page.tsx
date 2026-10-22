@@ -6,9 +6,13 @@ import { AudioPlayer } from "@/components/audio-player";
 import { ShareBar } from "@/components/share-bar";
 import { SongArt } from "@/components/song-art";
 import { YoutubeEmbed } from "@/components/youtube-embed";
-import { songBySlug, songs } from "@/content/songs";
+import { songs } from "@/content/songs";
+import { getPublicSong } from "@/server/catalog/load";
 
 type Params = { slug: string };
+
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return songs.map((song) => ({ slug: song.slug }));
@@ -16,7 +20,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { slug } = await params;
-  const song = songBySlug(slug);
+  const song = await getPublicSong(slug);
   if (!song) return { title: "Song" };
   return {
     title: song.title,
@@ -26,7 +30,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function SongPage({ params }: { params: Promise<Params> }) {
   const { slug } = await params;
-  const song = songBySlug(slug);
+  const song = await getPublicSong(slug);
   if (!song) notFound();
 
   return (
@@ -37,7 +41,18 @@ export default async function SongPage({ params }: { params: Promise<Params> }) 
           {song.placeholder ? "Placeholder" : song.genre}
         </p>
         <h1 className="font-[family-name:var(--font-display)] text-5xl text-white">{song.title}</h1>
+        {song.duration || song.releaseDate ? (
+          <p className="text-sm text-[#b7aa9a]">
+            {[song.duration, song.releaseDate].filter(Boolean).join(" · ")}
+          </p>
+        ) : null}
         <p className="max-w-2xl leading-7 text-[#e7dccb]">{song.description}</p>
+        {song.lyrics ? (
+          <section aria-labelledby="lyrics-heading">
+            <h2 id="lyrics-heading" className="text-sm uppercase tracking-[0.16em] text-[#d6b16a]">Lyrics</h2>
+            <pre className="mt-3 whitespace-pre-wrap font-[family-name:var(--font-body)] text-sm leading-6 text-[#e7dccb]">{song.lyrics}</pre>
+          </section>
+        ) : null}
         {song.satireDisclaimer ? (
           <p className="rounded-md border border-[#d6b16a]/40 bg-[#d6b16a]/10 px-3 py-2 text-sm leading-6 text-[#f6e7c4]">
             {song.satireDisclaimer}
