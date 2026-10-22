@@ -26,6 +26,8 @@ test("Omar Is Going Away is the featured satire release", () => {
   const song = featuredSong();
   assert.equal(song.slug, "omar-is-going-away");
   assert.equal(song.youtubeId, "Oiug5ycMMEY");
+  assert.equal(song.mp3Url, "/audio/omar-is-going-away.mp3");
+  assert.equal(isDirectMp3(song.mp3Url), true);
   assert.equal(song.placeholder, false);
   assert.equal(song.genre, "Political satire / comedy music");
   assert.equal(song.satireDisclaimer, SATIRE_DISCLAIMER);
@@ -45,6 +47,8 @@ test("placeholders are labeled and have no invented media", () => {
 });
 
 test("direct MP3 links are https files and YouTube pages are rejected", () => {
+  assert.equal(isDirectMp3("/audio/omar-is-going-away.mp3"), true);
+  assert.equal(isDirectMp3("/audio/../secret.mp3"), false);
   assert.equal(isDirectMp3("https://example.com/audio/omar.mp3"), true);
   assert.equal(isDirectMp3("https://thefump.com/files/song.mp3"), true);
   assert.equal(isDirectMp3("http://example.com/song.mp3"), false);

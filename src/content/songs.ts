@@ -17,7 +17,7 @@ export type Song = {
   /** True when the title, audio, or artwork has not been supplied yet. */
   placeholder: boolean;
   youtubeId?: string;
-  /** Direct HTTPS URL to an .mp3 file. Leave unset until the file exists. */
+  /** Site path or HTTPS URL for an .mp3 file. Leave unset until the file exists. */
   mp3Url?: string;
   /** Public image URL or a file in /public. Leave unset until artwork exists. */
   artwork?: string;
@@ -28,7 +28,8 @@ export type Song = {
 
 /**
  * Add a finished song by appending one object to this array.
- * To attach an MP3, set mp3Url to a public HTTPS link that ends in .mp3.
+ * To attach an MP3, set mp3Url to a file in public, such as /audio/song.mp3,
+ * or to a public HTTPS link that ends in .mp3.
  * To attach cover art, set artwork to an https image or a path such as /covers/song.jpg
  * and put the file in public/covers. Do not point mp3Url at a YouTube page.
  * Placeholder slots fill the catalog up to 21 entries and are labeled as placeholders.
@@ -43,8 +44,9 @@ export const releases: Song[] = [
     description:
       "A political satire and comedy song by Make It Neat. The recording is a performed joke, not a documentary.",
     youtubeId: "Oiug5ycMMEY",
+    mp3Url: "/audio/omar-is-going-away.mp3",
     artwork: "https://i.ytimg.com/vi/Oiug5ycMMEY/hqdefault.jpg",
-    artworkNote: "Video thumbnail from YouTube. Replace this with final cover art when the image file is ready.",
+    artworkNote: "Temporary artwork: YouTube video thumbnail. Replace with final cover art when the image file is ready.",
     streaming: [
       { label: "YouTube", href: "https://youtu.be/Oiug5ycMMEY" },
     ],
